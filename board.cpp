@@ -1,4 +1,6 @@
 #include <iostream>
+#include <time.h>
+#include <unistd.h>
 
 const int Xsize = 10;
 const int Ysize = 10;
@@ -13,21 +15,39 @@ class Board {
         int getX();
         int getY();
         void placeLife(int x, int y);
+        void endLife(int x, int y);
         int livingNeighbors(int x, int y);
         void nextGeneration();
         int getGeneration();
         void commenceSim();
+        int getRandom(int x, int y);
 };
 
 void Board::commenceSim(){
+    srand(time(NULL));
     //get number of original living cells
+    int origCells = getRandom(10, getX()*getY());
+    
+    //randomly disperse living cells
+    while(origCells > 0){
+        placeLife(  getRandom(0, getX()), getRandom(0, getY()) );
+        origCells--;
+        
+    }
+    
+    //run 5 generations
+    displayBoard();
+    while(getGeneration() < 5){
+        nextGeneration();
+        displayBoard();
+    }
 
 }
 
 Board::Board(){
     for(int i = 0; i < getX(); i++){
         for(int j = 0; j < getY(); j++){
-            universe[i][j] = '.';
+            endLife(i, j);
         }
     }
     generation = 0;
@@ -42,14 +62,14 @@ void Board::nextGeneration(){
             if(universe[i][j] == 'X'){
                 //kill cell if not having exactly 2 or 3 neighbors
                 if(neighbors < 2)
-                    universe[i][j] = '.';
+                    endLife(i, j);
                 else if(neighbors > 3)
-                    universe[i][j] = '.';
+                    endLife(i, j);
             }
             else{
                 //revive dead cell if exactly 3 neighbors
                 if(neighbors == 3)
-                    universe[i][j] = 'X';
+                    placeLife(i, j);
             }
         }
     }
@@ -103,6 +123,15 @@ void Board::placeLife(int x, int y){
         universe[x][y] = 'X';
 }
 
+void Board::endLife(int x, int y){
+    if(x < getX() && x < getY())
+        universe[x][y] = '.';
+}
+
 int Board::getGeneration(){
     return generation;
+}
+
+int Board::getRandom(int startVal, int endVal){
+    return ((rand() % endVal) + startVal);
 }
