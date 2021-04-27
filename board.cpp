@@ -30,16 +30,16 @@ void Board::commenceSim(){
     
     //randomly disperse living cells
     while(origCells > 0){
-        placeLife(  getRandom(0, getX()), getRandom(0, getY()) );
+        Board::placeLife(getRandom(0, getX()), getRandom(0, getY()) );
         origCells--;
         
     }
-    
+
     //run 5 generations
     displayBoard();
-    while(getGeneration() < 5){
-        nextGeneration();
-        displayBoard();
+    while(Board::getGeneration() < 5){
+        Board::nextGeneration();
+        Board::displayBoard();
     }
 
 }
@@ -47,7 +47,7 @@ void Board::commenceSim(){
 Board::Board(){
     for(int i = 0; i < getX(); i++){
         for(int j = 0; j < getY(); j++){
-            endLife(i, j);
+            Board::endLife(i, j);
         }
     }
     generation = 0;
@@ -57,19 +57,19 @@ void Board::nextGeneration(){
     for(int i = 0; i < getX(); i++){
         for(int j = 0; j < getY(); j++){
             //get number of neighbors for cell
-            int neighbors = livingNeighbors(i, j);
+            int neighbors = Board::livingNeighbors(i, j);
             //if living cell
             if(universe[i][j] == 'X'){
                 //kill cell if not having exactly 2 or 3 neighbors
                 if(neighbors < 2)
-                    endLife(i, j);
+                    Board::endLife(i, j);
                 else if(neighbors > 3)
-                    endLife(i, j);
+                    Board::endLife(i, j);
             }
             else{
                 //revive dead cell if exactly 3 neighbors
                 if(neighbors == 3)
-                    placeLife(i, j);
+                    Board::placeLife(i, j);
             }
         }
     }
@@ -107,7 +107,7 @@ void Board::displayBoard(){
         }
         std::cout << std::endl;
     }
-    std::cout << "Generation: " << getGeneration() << std::endl;
+    std::cout << "Generation: " << Board::getGeneration() << std::endl;
 }
 
 int Board::getX(){
